@@ -1,8 +1,7 @@
-const { default: inquirer } = require("inquirer");
-
+const inquirer = require('inquirer')
+//const cTable = require('console.table');
 const express = require('express');
-const inquirer = require('inquirer');
-const mysql = require('12');
+const mysql = require('mysql2');
 const PORT = process.env.PORT || 3005;
 
 const app = express();
@@ -10,21 +9,40 @@ const app = express();
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
-const db = mysql.createConnection(
-    {
-        host: 'localhost',
-        // MySQL username,
-        user: 'root',
-        // MySQL password
-        password: '',
-        database: 'classlist_db'
-      },
-      console.log(`Connected to the classlist_db database.`)
-);
+// const db = mysql.createConnection(
+//     {
+//         host: 'localhost',
+//         // MySQL username,
+//         user: 'root',
+//         // MySQL password
+//         password: '',
+//         database: 'classlist_db'
+//       },
+//       console.log(`Connected to the classlist_db database.`)
+// );
 
 
 //*main menu selection to bounce between separate options
 //!may have to put bonus stuff in here if I have time? will figure out when I cross that bridge
+const welcomeMessage = () => {
+    return inquirer.prompt([
+        {
+            type: 'confirm',
+            message: "Welcome! Would you like to access the database?",
+            name: "confirm"
+        }
+    ])
+    .then((answer) =>{
+        if (answer.choice == true){
+            mainMenu();
+        }
+        else {
+            return;
+        }
+    })
+}
+
+
 const mainMenu = () => {
     let choiceSelection;
     return inquirer.prompt([
@@ -86,6 +104,7 @@ const viewEmployees = () => {
 
 //*FOR this Im thinking to use the db.stuff found in assignment 21 line 27
 //*basically get all of the inputs in an inquirer, then use the .then() to deconstruct the object and add to the db
+//*may want to make like a class JS for adding stuff and viewing stuff to clean this up a little
 const addDepartment = () => {
     
 }
@@ -101,3 +120,6 @@ const addEmployee = () => {
 const updateEmployee = () => {
     
 }
+
+welcomeMessage()
+    .then(mainMenu)

@@ -9,6 +9,8 @@ const app = express();
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
+let role
+
 const db = mysql.createConnection(
     {
         host: 'localhost',
@@ -115,7 +117,10 @@ mainMenu = () => {
 }
 
 viewRoles = () => {
-    db.query('SELECT * FROM roles JOIN department ON roles.department_id = department.id', function (err, results) {
+    db.query(`SELECT roles.id AS Role_ID, roles.title AS Role_Title, roles.salary AS Salary, roles.department_id AS Department_ID, 
+    department.nameOfDepartment AS Department 
+    FROM roles 
+    JOIN department ON roles.department_id = department.id`, function (err, results) {
         if (err) throw err;
         console.table(results);
         mainMenu()
@@ -202,10 +207,10 @@ addRole = () => {
         ])
         .then((answers) => {
             const {roleTitle, roleSalary, roleDepartment} = answers;
+
             db.query(
                 `INSERT INTO roles (title, salary, department_id) VALUES ("${roleTitle}", ${roleSalary}, ${roleDepartment.id})`, function (err, results) {
                 if (err) throw err;
-                console.log("Successfully added");
                 mainMenu();
             })
         })
@@ -241,9 +246,10 @@ addEmployee = () => {
             let roleData = {
                 name: results[i].title,
                 value: {
-                    id: results[i].department_id
+                    id: results[i].id
                 }
             }
+            console.log(roleData)
             roleChoices.push(roleData);
         }
         inquirer.prompt([
@@ -274,6 +280,7 @@ addEmployee = () => {
         ])
         .then((answers) => {
             const {firstName, lastName, roleID, managerID} = answers;
+            console.log(roleID);
 
             db.query(
                 `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${firstName}", "${lastName}", ${roleID.id}, ${managerID.id})`, function (err, results) {
@@ -307,7 +314,8 @@ updateEmployee = () => {
             let roleData = {
                 name: results[i].title,
                 value: {
-                    id: results[i].department_id
+                    id: results[i].id,
+                    salary: results[i].salary,
                 }
             }
             roleChoices.push(roleData);
@@ -324,12 +332,13 @@ updateEmployee = () => {
                 message: 'What is their new role?',
                 choices: roleChoices,
                 name: 'role'
-
             },
             
         ])
         .then((answers) => {
             const {employee, role} = answers;
+            console.log(role)
+            console.log(employee)
 
             db.query(`UPDATE employee SET role_id = ${role.id} WHERE id = ${employee.id}`, function (err, results) {
                 if (err) throw err;
@@ -348,12 +357,7 @@ updateEmployee = () => {
 
 
 employeeByManager = () => {
-    let managerChoices = [{
-        name: "none",
-        value: {
-            id: null
-        }
-    }];
+    let managerChoices = [];
 
     db.query('SELECT * FROM employee WHERE role_id = ?', 5, function(err, results) {
         if (err) throw err;

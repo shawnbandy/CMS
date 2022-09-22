@@ -23,7 +23,6 @@ const db = mysql.createConnection(
 
 
 //*main menu selection to bounce between separate options
-//!may have to put bonus stuff in here if I have time? will figure out when I cross that bridge
 welcomeMessage = () => {
     return inquirer.prompt([
         {
@@ -49,7 +48,17 @@ mainMenu = () => {
         {
             type: 'list',
             message: 'Please select one of the following options below:', 
-            choices: ['View all roles', 'View all departments', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Quit'],
+            choices: ['View all roles', 
+            'View all departments', 
+            'View all employees', 
+            'Add a department', 
+            'Add a role', 
+            'Add an employee', 
+            'Update an employee role', 
+            'View Employees by Manager', 
+            'View Employees by Department',
+            'View Department Salary',
+            'Quit'],
             name: 'selection'
         }
     ])
@@ -82,7 +91,20 @@ mainMenu = () => {
         
             case 'Update an employee role' :
                 choiceSelection = updateEmployee();
-                break;   
+                break; 
+                
+            case 'View Employees by Manager' :
+                choiceSelection = employeeByManager();
+                break;
+
+            case 'View Employees by Department' :
+                choiceSelection = employeeByDepartment();
+                break;
+
+            case 'View Department Salary' :
+                choiceSelection = salaryByDepartment();
+                break;
+
             case 'Quit' :
                 choiceSelection = "Goodbye";
                 break;
@@ -111,7 +133,7 @@ viewEmployees = () => {
     db.query(`SELECT employee.id AS ID_Tag, employee.first_name AS First, employee.last_name AS Last, manager_id As Managers_ID, employee.role_id AS Role_ID, 
     roles.title AS Title, roles.salary AS Salary, 
     department.nameOfDepartment AS Department 
-    from employee 
+    FROM employee 
     JOIN roles on employee.role_id = roles.id 
     JOIN department on roles.department_id = department.id`, function (err, results) {
         if (err) throw err;
@@ -318,7 +340,123 @@ updateEmployee = () => {
     })
 }
 
+//*Bonus: update employee managers, 
+// // *View employees by Manager, 
+// // *View employees by department, 
+//*delete departments/roles/employees, 
+// // *view combined salaries of all employees in a department 
+
+
+employeeByManager = () => {
+    let managerChoices = [{
+        name: "none",
+        value: {
+            id: null
+        }
+    }];
+
+    db.query('SELECT * FROM employee WHERE role_id = ?', 5, function(err, results) {
+        if (err) throw err;
+        for(let i = 0; i < results.length; i++){
+            let managerData = {
+                name: results[i].first_name + " " + results[i].last_name,
+                value: {
+                    id: results[i].id
+                }
+            }
+            managerChoices.push(managerData);
+        }
+        inquirer.prompt([
+            {
+                type: 'list',
+                message: 'Please select the manager',
+                choices: managerChoices,
+                name: 'manager'
+            }
+        ])
+        .then((answer) =>{
+            const {manager} = answer;
+
+            db.query(`SELECT * FROM employee WHERE manager_id = ?`, manager.id, function(err, results) {
+                if (err) throw err
+                console.table(results)
+                mainMenu();
+            })
+
+        })
+    })
+}
+
+employeeByDepartment = () => {
+    let department = [];
+
+    db.query('SELECT * from department', function(err, results) {
+        for(let i = 0; i < results.length; i++){
+            let departmentData = {
+                name: results[i].nameOfDepartment,
+                value: {
+                    id: results[i].id
+                }
+            }
+            department.push(departmentData);
+        }
+        inquirer.prompt([
+            {
+                type: 'list',
+                message: 'Select the department to view employees',
+                choices: department,
+                name: 'choice'
+            }
+        ])
+        .then((answer)=>{
+            const {choice} = answer;
+
+            db.query(`SELECT * FROM employee WHERE role_id = ?`, choice.id, function(err, results) {
+                if (err) throw err
+                console.table(results)
+                mainMenu();
+            })
+
+        })
+    })
+}
+
+salaryByDepartment = () => {
+    let department = [];
+
+    db.query('SELECT * from department', function(err, results) {
+        for(let i = 0; i < results.length; i++){
+            let departmentData = {
+                name: results[i].nameOfDepartment,
+                value: {
+                    id: results[i].id
+                }
+            }
+            department.push(departmentData);
+        }
+        inquirer.prompt([
+            {
+                type: 'list',
+                message: 'Select the department to view employees',
+                choices: department,
+                name: 'choice'
+            }
+        ])
+        .then((answer)=>{
+            const {choice} = answer;
+
+            db.query(`SELECT SUM(roles.salary) AS TotalSalary FROM employee JOIN roles on employee.role_id = roles.id WHERE department_id = ?`, choice.id, function(err, results) {
+                if (err) throw err
+                console.table(results)
+                mainMenu();
+            })
+
+        })
+    })
+}
+
 welcomeMessage()
+
 
 
 

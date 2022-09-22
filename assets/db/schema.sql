@@ -1,5 +1,5 @@
 
-DROP DATABASE IF EXISTS store_db; --may have to delete this for persistant data--
+DROP DATABASE IF EXISTS store_db;
 
 CREATE DATABASE store_db;
 
@@ -10,7 +10,7 @@ CREATE TABLE department(
     nameOfDepartment VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE roleS(
+CREATE TABLE roles(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL,
@@ -24,6 +24,6 @@ CREATE TABLE employee(
     last_name VARCHAR(30) NOT NULL,
     role_id INT, 
     manager_id INT, 
-    FOREIGN KEY (role_id) REFERENCES roleS(id) ON DELETE SET NULL,
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE SET NULL,
     FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
 );

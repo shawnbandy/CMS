@@ -10,12 +10,12 @@
         e. add a role ✅
         f. add an employee ✅
         g. update an employee role ✅
-    3. Viewing all departments should present all department names and their IDs
-    4. Viewing all roles should present with job title, role id, department it belongs to, and salary
-    5. Viewing all employees should have a table with employee ids, first names, last names, job titles, departments, salaries, and managers that employees report to 
+    3. Viewing all departments should present all department names and their IDs ✅
+    4. Viewing all roles should present with job title, role id, department it belongs to, and salary ✅
+    5. Viewing all employees should have a table with employee ids, first names, last names, job titles, departments, salaries, and managers that employees report to ✅
     6. Adding a department should allow user to enter a new department
     7. Adding a role should allow user to enter a new role with name, salary, and department
-    8. Adding an employee should allow user to enter a new employee
+    8. Adding an employee should allow user to enter a new employee ✅
     9. Updating allows user to select an employee and update their new role
 
 ### Application specifics
@@ -37,7 +37,7 @@
             iii. last_name: VARCHAR(30) ✅
             iv. role_id: INT to hold reference to role(id) ✅
             v. manager_id INT to hold reference to employee(id), can be null ✅
-    5. Application SQL files should include a schema and a seeds to populate the database 
+    5. Application SQL files should include a schema and a seeds to populate the database ✅
 
 ### Bonus: 
     1. Be able to update employee managers

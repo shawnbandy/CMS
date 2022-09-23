@@ -157,10 +157,6 @@ viewEmployees = () => {
     })
 }
 
-
-//*FOR this Im thinking to use the db.stuff found in assignment 21 line 27
-//*basically get all of the inputs in an inquirer, then use the .then() to deconstruct the object and add to the db
-//*may want to make like a class JS for adding stuff and viewing stuff to clean this up a little
 addDepartment = () => {
     return inquirer.prompt([
         {
@@ -347,8 +343,6 @@ updateEmployee = () => {
         ])
             .then((answers) => {
                 const { employee, role } = answers;
-                console.log(role)
-                console.log(employee)
 
                 db.query(`UPDATE employee SET role_id = ${role.id} WHERE id = ${employee.id}`, function (err, results) {
                     if (err) throw err;
@@ -359,7 +353,7 @@ updateEmployee = () => {
     })
 }
 
-//*Bonus: update employee managers, 
+// // *Bonus: update employee managers, 
 // // *View employees by Manager, 
 // // *View employees by department, 
 // // *delete departments/roles/employees, 
@@ -412,6 +406,12 @@ updateManager = () => {
         ])
             .then((answer) => {
                 const { chosenEmployee, chosenManager } = answer;
+
+                db.query(`UPDATE employee SET manager_id = ${chosenManager.id} WHERE id = ${chosenEmployee.id}`, function(err, results){
+                    if (err) throw err
+                    console.log('Success')
+                    mainMenu()
+                })
 
             })
     })
@@ -476,7 +476,7 @@ employeeByDepartment = () => {
             .then((answer) => {
                 const { choice } = answer;
 
-                db.query(`SELECT * FROM employee WHERE role_id = ?`, choice.id, function (err, results) {
+                db.query(`SELECT * FROM employee JOIN roles on employee.role_id = roles.id WHERE department_id = ?`, choice.id, function (err, results) {
                     if (err) throw err
                     console.table(results)
                     mainMenu();

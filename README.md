@@ -59,7 +59,8 @@ and the ability to delete departments, roles, and employees from the database.
 All of these database requests are handled in the JS file and then either modify or retrieve data from the database accordingly. 
 
 ### To use
-    Please run the schema.sql followed by the seeds.sql prior to starting the application. This can be done in the /db folder with MySQL commands. 
+    Please run the schema.sql followed by the seeds.sql prior to starting the application. 
+    This can be done in the /db folder with MySQL commands. 
 
 
 Github repo: https://github.com/shawnbandy/CMS

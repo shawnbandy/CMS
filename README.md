@@ -21,7 +21,7 @@
 ### Application specifics
     1. Should use MySQL and SQL files for database modification and storage ✅
     2. Should use Inquirer for user input ✅
-    3. Should use Express for server use ✅
+    3. Should use Console.Table for logging use ✅
     4. MySQL Table Breakdowns:
         A. Department ✅
             i. id: INT PRIMARY KEY ✅
@@ -46,3 +46,14 @@
     4. Delete departments, roles, and employees ✅
     5. View the combined salaries of all employees in a department ✅
 
+### Application Description
+    CMS, or content management system, is a database system designed to allow users to quickly and efficiently create and manage a variety of tools for a department. 
+    On database creation, the user is given various generic departments, roles, and employees. When launching the application via node.js on the index.js file, the user is given selection options with inquirer npm on the main menu. Selecting an option will call upon varying functions, which will ask for information and then pushing it into the database. These options include viewing all departments, viewing all roles, viewing all employees, adding departments, adding roles, adding employees, updating employees' roles, updating employees' managers, viewing employees by manager, viewing employees by department, viewing the combined salaries of employees of a department, and the ability to delete departments, roles, and employees from the database. All of these database requests are handled in the JS file and then either modify or retrieve data from the database accordingly. 
+
+### To use
+    Please run the schema.sql followed by the seeds.sql prior to starting the application. This can be done in the /db folder with MySQL commands. 
+
+
+Github repo: https://github.com/shawnbandy/CMS
+
+Link to video: https://www.youtube.com/watch?v=MbHEhctDvc4
